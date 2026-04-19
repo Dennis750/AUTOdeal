@@ -314,6 +314,7 @@ public class DataInitializer {
             user.setPassword(passwordEncoder.encode("1234"));
             user.setName("Autoklass Cluj");
             user.setPhoneNumber("0744123456");
+            user.setEmail("denniscortel@gmail.com");
             user.setRole(Role.SELLER);
             return userRepository.save(user);
         });
@@ -324,6 +325,7 @@ public class DataInitializer {
             user.setPassword(passwordEncoder.encode("admin123"));
             user.setName("AUTOdeal Admin");
             user.setPhoneNumber("0700000000");
+            user.setEmail("denniscortel@gmail.com");
             user.setRole(Role.ADMIN);
             return userRepository.save(user);
         });

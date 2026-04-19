@@ -18,6 +18,11 @@ import ro.autodeal.repository.CarModelRepository;
 import ro.autodeal.repository.CarPostRepository;
 import ro.autodeal.repository.UserRepository;
 import ro.autodeal.repository.specification.CarPostSpecification;
+import org.springframework.context.ApplicationEventPublisher;
+import ro.autodeal.event.CarPostCreatedEvent;
+import ro.autodeal.event.CarPostDeletedEvent;
+import ro.autodeal.event.CarPostUpdatedEvent;
+import java.util.List;
 
 @Service
 public class CarPostService {
@@ -26,15 +31,18 @@ public class CarPostService {
     private final BrandRepository brandRepository;
     private final CarModelRepository carModelRepository;
     private final UserRepository userRepository;
+    private final ApplicationEventPublisher eventPublisher;
 
     public CarPostService(CarPostRepository carPostRepository,
                           BrandRepository brandRepository,
                           CarModelRepository carModelRepository,
-                          UserRepository userRepository) {
+                          UserRepository userRepository,
+                          ApplicationEventPublisher eventPublisher) {
         this.carPostRepository = carPostRepository;
         this.brandRepository = brandRepository;
         this.carModelRepository = carModelRepository;
         this.userRepository = userRepository;
+        this.eventPublisher = eventPublisher;
     }
 
     public Page<CarPost> getFilteredPosts(Long brandId,
@@ -72,6 +80,40 @@ public class CarPostService {
         PageRequest pageRequest = PageRequest.of(page, size, sort);
 
         return carPostRepository.findAll(spec, pageRequest);
+    }
+
+    public List<CarPost> getFilteredPostsForExport(Long brandId,
+                                                   Integer minPrice,
+                                                   Integer maxPrice,
+                                                   Integer year,
+                                                   FuelType fuelType,
+                                                   String sortBy) {
+
+        Specification<CarPost> spec = Specification.where(CarPostSpecification.isVisible());
+
+        if (brandId != null) {
+            spec = spec.and(CarPostSpecification.hasBrandId(brandId));
+        }
+
+        if (minPrice != null) {
+            spec = spec.and(CarPostSpecification.hasMinPrice(minPrice));
+        }
+
+        if (maxPrice != null) {
+            spec = spec.and(CarPostSpecification.hasMaxPrice(maxPrice));
+        }
+
+        if (year != null) {
+            spec = spec.and(CarPostSpecification.hasYear(year));
+        }
+
+        if (fuelType != null) {
+            spec = spec.and(CarPostSpecification.hasFuelType(fuelType));
+        }
+
+        Sort sort = getSort(sortBy);
+
+        return carPostRepository.findAll(spec, sort);
     }
 
     public Page<CarPost> getMyPosts(String username,
@@ -132,6 +174,35 @@ public class CarPostService {
         carPost.setSeller(seller);
 
         carPostRepository.save(carPost);
+
+        String message = String.format("""
+AUTOdeal Notification
+
+Hello %s,
+
+Your car listing has been successfully created.
+
+Car: %s %s
+Year: %d
+Price: €%,d
+
+Best regards,
+AUTOdeal Team
+""",
+                seller.getUsername(),
+                brand.getName(),
+                model.getName(),
+                year,
+                price
+        );
+
+        eventPublisher.publishEvent(
+                new CarPostCreatedEvent(
+                        seller.getUsername(),
+                        seller.getEmail(),
+                        message
+                )
+        );
     }
 
     public void updateCarPost(Long id,
@@ -174,6 +245,35 @@ public class CarPostService {
         existingPost.setImageUrl(imageUrl != null && !imageUrl.isBlank() ? imageUrl.trim() : null);
 
         carPostRepository.save(existingPost);
+
+        String message = String.format("""
+AUTOdeal Notification
+
+Hello %s,
+
+Your car listing has been successfully updated.
+
+Car: %s %s
+Year: %d
+Price: €%,d
+
+Best regards,
+AUTOdeal Team
+""",
+                currentUser.getUsername(),
+                brand.getName(),
+                model.getName(),
+                year,
+                price
+        );
+
+        eventPublisher.publishEvent(
+                new CarPostUpdatedEvent(
+                        currentUser.getUsername(),
+                        currentUser.getEmail(),
+                        message
+                )
+        );
     }
 
     public void deleteById(Long id) {
@@ -189,7 +289,32 @@ public class CarPostService {
             throw new RuntimeException("You can delete only your own posts");
         }
 
+        String message = String.format("""
+AUTOdeal Notification
+
+Hello %s,
+
+Your car listing has been successfully deleted.
+
+Car: %s %s
+
+Best regards,
+AUTOdeal Team
+""",
+                currentUser.getUsername(),
+                existingPost.getBrand().getName(),
+                existingPost.getModel().getName()
+        );
+
         carPostRepository.deleteById(id);
+
+        eventPublisher.publishEvent(
+                new CarPostDeletedEvent(
+                        currentUser.getUsername(),
+                        currentUser.getEmail(),
+                        message
+                )
+        );
     }
 
     public boolean canEdit(CarPost post, String username) {

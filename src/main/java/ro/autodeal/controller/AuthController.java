@@ -38,12 +38,13 @@ public class AuthController {
                                @RequestParam String confirmPassword,
                                @RequestParam String name,
                                @RequestParam String phoneNumber,
+                               @RequestParam String email,
                                @RequestParam Role role,
                                Model model,
                                HttpServletRequest request) {
 
         try {
-            userService.registerUser(username, password, confirmPassword, name, phoneNumber, role);
+            userService.registerUser(username, password, confirmPassword, name, phoneNumber, email, role);
 
             request.login(username, password);
 

@@ -38,6 +38,7 @@ public class UserService {
                              String confirmPassword,
                              String name,
                              String phoneNumber,
+                             String email,
                              Role role) {
 
         if (userRepository.findByUsername(username).isPresent()) {
@@ -57,6 +58,7 @@ public class UserService {
         user.setPassword(passwordEncoder.encode(password));
         user.setName(name);
         user.setPhoneNumber(phoneNumber);
+        user.setEmail(email);
         user.setRole(role);
 
         userRepository.save(user);
