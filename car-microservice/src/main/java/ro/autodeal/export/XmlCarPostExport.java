@@ -2,14 +2,19 @@ package ro.autodeal.export;
 
 import org.springframework.stereotype.Component;
 import ro.autodeal.model.CarPost;
+import ro.autodeal.service.CarPostQueryService;
 
 import java.util.List;
 
 @Component
-public class XmlExportStrategy implements ExportStrategy {
+public class XmlCarPostExport extends CarPostExportTemplate {
+
+    public XmlCarPostExport(CarPostQueryService carPostQueryService) {
+        super(carPostQueryService);
+    }
 
     @Override
-    public String export(List<CarPost> carPosts) {
+    protected String transform(List<CarPost> carPosts) {
         StringBuilder sb = new StringBuilder();
 
         sb.append("<carPosts>\n");
@@ -37,6 +42,7 @@ public class XmlExportStrategy implements ExportStrategy {
         if (value == null) {
             return "";
         }
+
         return value
                 .replace("&", "&amp;")
                 .replace("<", "&lt;")

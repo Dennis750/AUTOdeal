@@ -2,14 +2,19 @@ package ro.autodeal.export;
 
 import org.springframework.stereotype.Component;
 import ro.autodeal.model.CarPost;
+import ro.autodeal.service.CarPostQueryService;
 
 import java.util.List;
 
 @Component
-public class JsonExportStrategy implements ExportStrategy {
+public class JsonCarPostExport extends CarPostExportTemplate {
+
+    public JsonCarPostExport(CarPostQueryService carPostQueryService) {
+        super(carPostQueryService);
+    }
 
     @Override
-    public String export(List<CarPost> carPosts) {
+    protected String transform(List<CarPost> carPosts) {
         StringBuilder sb = new StringBuilder();
         sb.append("[\n");
 
@@ -32,6 +37,7 @@ public class JsonExportStrategy implements ExportStrategy {
             if (i < carPosts.size() - 1) {
                 sb.append(",");
             }
+
             sb.append("\n");
         }
 

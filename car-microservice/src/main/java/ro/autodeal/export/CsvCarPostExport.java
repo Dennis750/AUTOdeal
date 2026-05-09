@@ -2,14 +2,19 @@ package ro.autodeal.export;
 
 import org.springframework.stereotype.Component;
 import ro.autodeal.model.CarPost;
+import ro.autodeal.service.CarPostQueryService;
 
 import java.util.List;
 
 @Component
-public class CsvExportStrategy implements ExportStrategy {
+public class CsvCarPostExport extends CarPostExportTemplate {
+
+    public CsvCarPostExport(CarPostQueryService carPostQueryService) {
+        super(carPostQueryService);
+    }
 
     @Override
-    public String export(List<CarPost> carPosts) {
+    protected String transform(List<CarPost> carPosts) {
         StringBuilder sb = new StringBuilder();
 
         sb.append("id,brand,model,year,price,mileage,fuelType,horsepower,city,seller\n");
@@ -34,9 +39,11 @@ public class CsvExportStrategy implements ExportStrategy {
         if (value == null) {
             return "";
         }
+
         if (value.contains(",") || value.contains("\"")) {
             return "\"" + value.replace("\"", "\"\"") + "\"";
         }
+
         return value;
     }
 }
