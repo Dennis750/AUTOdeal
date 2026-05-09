@@ -34,8 +34,10 @@ public class SecurityConfig {
     @Bean
     public DaoAuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+
         authProvider.setUserDetailsService(customUserDetailsService);
         authProvider.setPasswordEncoder(passwordEncoder());
+
         return authProvider;
     }
 
@@ -43,19 +45,16 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/cars", "/cars/models", "/cars/export/**", "/login", "/register").permitAll()
-                        .requestMatchers("/cars/create").hasAnyRole("SELLER", "ADMIN")
-                        .requestMatchers("/cars/edit/**").hasAnyRole("SELLER", "ADMIN")
-                        .requestMatchers("/cars/delete/**").hasAnyRole("SELLER", "ADMIN")
+                        .requestMatchers("/", "/login", "/register", "/api/users/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
                         .loginPage("/login")
-                        .defaultSuccessUrl("/cars", true)
+                        .defaultSuccessUrl("/register", true)
                         .permitAll()
                 )
                 .logout(logout -> logout
-                        .logoutSuccessUrl("/cars?logout")
+                        .logoutSuccessUrl("/login?logout")
                         .permitAll()
                 );
 
