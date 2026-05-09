@@ -1,23 +1,30 @@
 # AUTOdeal - Assignment 3 Microservices
 
-AUTOdeal is a car marketplace application refactored into a microservices-based architecture for Assignment 3.
+AUTOdeal is a car marketplace application developed for the Software Design assignments.
 
-## Services
+For Assignment 3, the original monolithic Spring Boot application was refactored into a microservices-based architecture.
 
-### car-microservice
+The project is split into two main backend microservices:
 
-Responsible for:
-- car posts
-- brands
-- car models
-- filtering, sorting and pagination
-- car post create/update/delete operations
-- export to JSON, CSV and XML
-- CQRS implementation
-- Command pattern for car post actions
-- Template pattern for export
+- `car-microservice`
+- `user-microservice`
 
-Runs on:
+Each microservice has its own responsibility and its own PostgreSQL database.
+
+---
+
+## Project Structure
 
 ```text
-http://localhost:8081
+AUTOdeal
+│
+├── car-microservice
+│   └── handles car posts, brands, models, filtering, sorting, export and car-related operations
+│
+├── user-microservice
+│   └── handles users, roles, login/register and user-related REST APIs
+│
+├── frontend
+│   └── reserved for a future separated frontend layer
+│
+└── README.md
