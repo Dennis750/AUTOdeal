@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+  <meta charset="UTF-8">
+  <title>AUTOdeal - Cars</title>
+  <style>
+    :root {
+      --bg: #0a0814;
+      --bg2: #120d22;
+      --bg3: #17112d;
+      --panel: rgba(25, 18, 47, 0.94);
+      --panel-strong: rgba(31, 22, 58, 0.98);
+      --border: rgba(255,255,255,0.08);
+      --border-strong: rgba(167, 139, 250, 0.18);
+      --text: #f8f7ff;
+      --text-soft: #d8d0f0;
+      --text-muted: #b2a7cf;
+      --accent: #b99cff;
+      --accent-hover: #a784ff;
+      --red: #ef4444;
+      --red-hover: #dc2626;
+      --shadow: 0 18px 44px rgba(0,0,0,0.32);
+      --shadow-soft: 0 10px 26px rgba(0,0,0,0.20);
+      --radius: 20px;
+      --radius-sm: 14px;
+      --button-text: #140f25;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      color: var(--text);
+      min-height: 100vh;
+      font-family: Inter, "Segoe UI", Roboto, Arial, sans-serif;
+      background:
+              radial-gradient(circle at top left, rgba(139,92,246,0.18), transparent 24%),
+              radial-gradient(circle at top right, rgba(59,130,246,0.12), transparent 18%),
+              linear-gradient(180deg, var(--bg), var(--bg2) 45%, var(--bg3));
+    }
+
+    .navbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: rgba(9, 8, 20, 0.86);
+      backdrop-filter: blur(10px);
+      color: white;
+      padding: 20px 42px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      box-shadow: 0 2px 18px rgba(0,0,0,0.12);
+    }
+
+    .navbar-inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .brand {
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: -0.4px;
+      color: white;
+      text-decoration: none;
+      display: inline-block;
+      transition: transform 0.18s ease, filter 0.18s ease;
+    }
+
+    .brand:hover {
+      transform: translateY(-2px) scale(1.03);
+      filter: brightness(1.05);
+    }
+
+    .brand-accent {
+      color: var(--accent);
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .nav-actions a,
+    .nav-actions button,
+    .toolbar-btn,
+    .filter-btn,
+    .page-btn,
+    .edit-btn,
+    .add-btn,
+    .my-btn {
+      text-decoration: none;
+      color: var(--button-text);
+      padding: 11px 18px;
+      border-radius: 14px;
+      border: none;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 800;
+      transition: 0.18s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: var(--shadow-soft);
+      font-family: inherit;
+      background: linear-gradient(180deg, var(--accent), var(--accent-hover));
+    }
+
+    .nav-actions a:hover,
+    .nav-actions button:hover,
+    .toolbar-btn:hover,
+    .filter-btn:hover,
+    .page-btn:hover,
+    .edit-btn:hover,
+    .add-btn:hover,
+    .my-btn:hover {
+      transform: translateY(-1px);
+      filter: brightness(1.03);
+    }
+
+    .nav-actions form {
+      display: inline;
+      margin: 0;
+    }
+
+    .delete-btn {
+      text-decoration: none;
+      color: white;
+      padding: 11px 18px;
+      border-radius: 14px;
+      border: none;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 800;
+      transition: 0.18s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: var(--shadow-soft);
+      font-family: inherit;
+      background: linear-gradient(180deg, var(--red), var(--red-hover));
+    }
+
+    .delete-btn:hover {
+      transform: translateY(-1px);
+      filter: brightness(1.03);
+    }
+
+    .container {
+      width: 90%;
+      max-width: 1320px;
+      margin: 38px auto 54px auto;
+    }
+
+    .nav-user {
+      display: inline-flex;
+      align-items: center;
+      padding: 11px 16px;
+      border-radius: 14px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(185,156,255,0.18);
+      color: var(--text);
+      font-size: 14px;
+      font-weight: 700;
+      box-shadow: var(--shadow-soft);
+    }
+
+    h1 {
+      margin: 0 0 24px 0;
+      font-size: 56px;
+      line-height: 1;
+      letter-spacing: -1.4px;
+      font-weight: 800;
+    }
+
+    .success {
+      color: #bbf7d0;
+      background: rgba(22,163,74,0.12);
+      border: 1px solid rgba(34,197,94,0.30);
+      padding: 14px 16px;
+      border-radius: 14px;
+      margin-bottom: 22px;
+      font-weight: 700;
+      box-shadow: var(--shadow-soft);
+    }
+
+
+    .filter-box {
+      display: block;
+      background: var(--panel);
+      padding: 24px;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      margin-bottom: 30px;
+      border: 1px solid var(--border-strong);
+      opacity: 0;
+      transform: translateY(-12px);
+      max-height: 0;
+      overflow: hidden;
+      pointer-events: none;
+      transition:
+              opacity 0.28s ease,
+              transform 0.28s ease,
+              max-height 0.35s ease,
+              padding-top 0.28s ease,
+              padding-bottom 0.28s ease,
+              margin-bottom 0.28s ease,
+              border-width 0.28s ease;
+      padding-top: 0;
+      padding-bottom: 0;
+      margin-bottom: 0;
+      border-width: 0;
+    }
+
+    .filter-box.show {
+      opacity: 1;
+      transform: translateY(0);
+      max-height: 600px;
+      pointer-events: auto;
+      padding: 24px;
+      margin-bottom: 30px;
+      border-width: 1px;
+    }
+
+    .filter-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+    }
+
+    .filter-actions {
+      margin-top: 22px;
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 700;
+      color: white;
+      font-size: 14px;
+      letter-spacing: 0.1px;
+    }
+
+    input,
+    select {
+      width: 100%;
+      padding: 12px 44px 12px 14px;
+      border-radius: 14px;
+      border: 1px solid rgba(185,156,255,0.25);
+      background-color: rgba(255,255,255,0.06);
+      color: white;
+      outline: none;
+      font-size: 14px;
+      font-family: inherit;
+      transition: 0.18s ease;
+    }
+
+    input {
+      padding-right: 14px;
+    }
+
+    select {
+      appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      background-image:
+              linear-gradient(rgba(255,255,255,0.06), rgba(255,255,255,0.06)),
+              url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 20 20' fill='none'><path d='M5 7.5L10 12.5L15 7.5' stroke='%23d7c8ff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/></svg>");
+      background-repeat: no-repeat, no-repeat;
+      background-position: 0 0, right 14px center;
+      background-size: auto, 18px;
+      cursor: pointer;
+    }
+
+    input:focus,
+    select:focus {
+      border-color: rgba(139,92,246,0.9);
+      box-shadow: 0 0 0 3px rgba(139,92,246,0.16);
+      background-color: rgba(255,255,255,0.08);
+    }
+
+    select:hover {
+      border-color: rgba(185,156,255,0.4);
+      background-color: rgba(255,255,255,0.08);
+    }
+
+    select option {
+      background: #1b1431;
+      color: #ffffff;
+    }
+
+    select optgroup {
+      background: #1b1431;
+      color: #ffffff;
+    }
+
+    .reset-link {
+      text-decoration: none;
+      color: #d7c8ff;
+      font-weight: 700;
+      padding: 10px 2px;
+    }
+
+    .reset-link:hover {
+      color: white;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 26px;
+    }
+
+    .card {
+      background: var(--panel-strong);
+      border-radius: 22px;
+      padding: 18px;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+      transition: 0.18s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-3px);
+      border-color: rgba(167, 139, 250, 0.24);
+    }
+
+    .card-image {
+      width: 100%;
+      height: 235px;
+      object-fit: cover;
+      border-radius: 16px;
+      margin-bottom: 18px;
+      display: block;
+      background: #fff;
+    }
+
+    .card h2 {
+      margin: 0 0 12px 0;
+      font-size: 20px;
+      line-height: 1.2;
+      font-weight: 800;
+      letter-spacing: -0.4px;
+    }
+
+    .price-row {
+      margin-bottom: 16px;
+    }
+
+    .price-value {
+      display: inline-block;
+      font-size: 38px;
+      line-height: 1;
+      font-weight: 900;
+      letter-spacing: -1.2px;
+      color: #ffffff;
+      padding: 0;
+      border-radius: 0;
+      background: none;
+      border: none;
+      box-shadow: none;
+    }
+
+    .price-tax {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text-muted);
+      margin-left: 8px;
+      vertical-align: middle;
+    }
+
+    .car-meta {
+      margin-top: 6px;
+    }
+
+    .car-meta p,
+    .card p {
+      margin: 8px 0;
+      color: var(--text-soft);
+      font-size: 15px;
+      line-height: 1.45;
+    }
+
+    .car-meta strong,
+    .card strong {
+      color: white;
+    }
+
+    .card-actions {
+      margin-top: 18px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .login-hint {
+      color: #d7c8ff;
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    .login-hint:hover {
+      color: white;
+    }
+
+    .empty-message {
+      background: var(--panel);
+      padding: 24px;
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+      color: var(--text-soft);
+      font-size: 15px;
+    }
+
+    .pagination {
+      margin-top: 38px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 22px;
+      flex-wrap: wrap;
+    }
+
+    /* Export group container */
+    .export-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    /* "Export:" text */
+    .export-label {
+      font-size: 13px;
+      color: var(--text-muted);
+      font-weight: 700;
+    }
+
+    /* Smaller, subtle buttons */
+    .export-btn {
+      text-decoration: none;
+      font-size: 13px;
+      padding: 7px 12px;
+      border-radius: 10px;
+      font-weight: 700;
+      color: var(--text-soft);
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(185,156,255,0.18);
+      transition: 0.15s ease;
+    }
+
+    /* Hover effect (soft, not aggressive) */
+    .export-btn:hover {
+      color: white;
+      border-color: rgba(185,156,255,0.35);
+      background: rgba(185,156,255,0.12);
+    }
+
+    .page-info {
+      font-weight: 700;
+      color: white;
+      padding: 0 4px;
+    }
+
+    @media (max-width: 1150px) {
+      .grid,
+      .filter-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 760px) {
+      .navbar {
+        padding: 18px 20px;
+      }
+
+      .navbar-inner {
+        align-items: flex-start;
+      }
+
+      .brand {
+        font-size: 21px;
+      }
+
+      .container {
+        width: 94%;
+        margin-top: 26px;
+      }
+
+      h1 {
+        font-size: 40px;
+        line-height: 1.05;
+      }
+
+      .grid,
+      .filter-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .nav-actions {
+        width: 100%;
+      }
+
+      .card-image {
+        height: 210px;
+      }
+
+      .filter-box.show {
+        max-height: 1000px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="navbar">
+  <div class="navbar-inner">
+    <a class="brand" th:href="@{/}">
+      AUTO<span class="brand-accent">deal</span>
+    </a>
+
+    <div class="nav-actions">
+      <a th:href="@{/login}" sec:authorize="isAnonymous()">Login</a>
+      <a th:href="@{/register}" sec:authorize="isAnonymous()">Register</a>
+
+      <a th:href="@{/cars/create}"
+         class="add-btn"
+         sec:authorize="hasAnyRole('SELLER','ADMIN')">
+        + Add New Car
+      </a>
+
+      <form th:action="@{/logout}" method="post" sec:authorize="isAuthenticated()">
+        <button type="submit">Logout</button>
+      </form>
+
+      <span class="nav-user" sec:authorize="isAuthenticated()">
+      Hello, <span sec:authentication=" name"></span>
+      </span>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+
+  <div th:if="${param.logout}" class="success">
+    You have been logged out successfully.
+  </div>
+
+  <h1 th:text="${pageTitle}">Available Cars</h1>
+
+  <div class="toolbar" th:if="${!isMyListingsPage}">
+
+    <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+      <button type="button" class="toolbar-btn" onclick="toggleFilters()">Filters</button>
+
+      <a th:href="@{/cars/my-posts}"
+         class="my-btn"
+         sec:authorize="hasAnyRole('SELLER','ADMIN')">
+        My Listings
+      </a>
+    </div>
+
+    <div class="export-group">
+      <span class="export-label">Export:</span>
+
+      <a class="export-btn"
+         th:href="@{/cars/export/json(
+            brandId=${selectedBrandId},
+            minPrice=${selectedMinPrice},
+            maxPrice=${selectedMaxPrice},
+            year=${selectedYear},
+            fuelType=${selectedFuelType},
+            sortBy=${selectedSortBy}
+       )}">
+        JSON
+      </a>
+
+      <a class="export-btn"
+         th:href="@{/cars/export/csv(
+            brandId=${selectedBrandId},
+            minPrice=${selectedMinPrice},
+            maxPrice=${selectedMaxPrice},
+            year=${selectedYear},
+            fuelType=${selectedFuelType},
+            sortBy=${selectedSortBy}
+       )}">
+        CSV
+      </a>
+
+      <a class="export-btn"
+         th:href="@{/cars/export/xml(
+            brandId=${selectedBrandId},
+            minPrice=${selectedMinPrice},
+            maxPrice=${selectedMaxPrice},
+            year=${selectedYear},
+            fuelType=${selectedFuelType},
+            sortBy=${selectedSortBy}
+       )}">
+        XML
+      </a>
+    </div>
+
+  </div>
+
+  <div class="toolbar" th:if="${isMyListingsPage}">
+    <a th:href="@{/cars}"
+       class="my-btn"
+       sec:authorize="hasAnyRole('SELLER','ADMIN')">
+      All Listings
+    </a>
+  </div>
+  <form id="filtersPanel" th:if="${!isMyListingsPage}" th:action="@{/cars}" method="get" class="filter-box">
+    <div class="filter-grid">
+
+      <div>
+        <label><strong>Brand</strong></label><br>
+        <select name="brandId">
+          <option value="">All Brands</option>
+          <option th:each="brand : ${brands}"
+                  th:value="${brand.id}"
+                  th:text="${brand.name}"
+                  th:selected="${selectedBrandId != null and selectedBrandId == brand.id}">
+          </option>
+        </select>
+      </div>
+
+      <div>
+        <label><strong>Min Price</strong></label><br>
+        <input type="number" name="minPrice" th:value="${selectedMinPrice}">
+      </div>
+
+      <div>
+        <label><strong>Max Price</strong></label><br>
+        <input type="number" name="maxPrice" th:value="${selectedMaxPrice}">
+      </div>
+
+      <div>
+        <label><strong>Year</strong></label><br>
+        <input type="number" name="year" th:value="${selectedYear}">
+      </div>
+
+      <div>
+        <label><strong>Fuel Type</strong></label><br>
+        <select name="fuelType">
+          <option value="">All Fuel Types</option>
+          <option th:each="fuel : ${fuelTypes}"
+                  th:value="${fuel}"
+                  th:text="${fuel}"
+                  th:selected="${selectedFuelType != null and selectedFuelType == fuel}">
+          </option>
+        </select>
+      </div>
+
+      <div>
+        <label><strong>Sort By</strong></label><br>
+        <select name="sortBy">
+          <option value="">Default</option>
+          <option value="priceAsc" th:selected="${selectedSortBy == 'priceAsc'}">Price Ascending</option>
+          <option value="priceDesc" th:selected="${selectedSortBy == 'priceDesc'}">Price Descending</option>
+          <option value="yearAsc" th:selected="${selectedSortBy == 'yearAsc'}">Year Ascending</option>
+          <option value="yearDesc" th:selected="${selectedSortBy == 'yearDesc'}">Year Descending</option>
+          <option value="mileageAsc" th:selected="${selectedSortBy == 'mileageAsc'}">Mileage Ascending</option>
+          <option value="mileageDesc" th:selected="${selectedSortBy == 'mileageDesc'}">Mileage Descending</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="filter-actions">
+      <button type="submit" class="filter-btn">Apply Filters</button>
+      <a th:href="@{/cars}" class="reset-link">Reset</a>
+    </div>
+  </form>
+
+  <form th:if="${isMyListingsPage}" th:action="@{/cars/my-posts}" method="get" class="filter-box show">
+    <div class="filter-grid">
+      <div>
+        <label><strong>Sort By</strong></label><br>
+        <select name="sortBy">
+          <option value="">Default</option>
+          <option value="priceAsc" th:selected="${selectedSortBy == 'priceAsc'}">Price Ascending</option>
+          <option value="priceDesc" th:selected="${selectedSortBy == 'priceDesc'}">Price Descending</option>
+          <option value="yearAsc" th:selected="${selectedSortBy == 'yearAsc'}">Year Ascending</option>
+          <option value="yearDesc" th:selected="${selectedSortBy == 'yearDesc'}">Year Descending</option>
+          <option value="mileageAsc" th:selected="${selectedSortBy == 'mileageAsc'}">Mileage Ascending</option>
+          <option value="mileageDesc" th:selected="${selectedSortBy == 'mileageDesc'}">Mileage Descending</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="filter-actions">
+      <button type="submit" class="filter-btn">Apply</button>
+      <a th:href="@{/cars/my-posts}" class="reset-link">Reset</a>
+    </div>
+  </form>
+
+  <div th:if="${#lists.isEmpty(carPosts)}" class="empty-message">
+    No car posts available yet.
+  </div>
+
+  <div th:unless="${#lists.isEmpty(carPosts)}" class="grid">
+    <div class="card" th:each="post : ${carPosts}">
+
+      <img th:if="${post.imageUrl != null and !post.imageUrl.isEmpty()}"
+           th:src="${post.imageUrl}"
+           alt="Car image"
+           class="card-image">
+      <img th:if="${post.imageUrl == null or post.imageUrl.isEmpty()}"
+           src="https://via.placeholder.com/400x220?text=No+Image"
+           alt="No image"
+           class="card-image">
+
+      <h2 th:text="${post.brand.name + ' ' + post.model.name}">Brand Model</h2>
+
+      <div class="price-row">
+        <div class="price-value">
+          <span th:text="${#numbers.formatInteger(post.price, 1, 'POINT')}"></span> €
+          <span class="price-tax">+ TVA</span>
+        </div>
+      </div>
+
+      <div class="car-meta">
+        <p><strong>Year:</strong> <span th:text="${post.year}"></span></p>
+        <p><strong>Mileage:</strong> <span th:text="${post.mileage}"></span> km</p>
+        <p><strong>Fuel:</strong> <span th:text="${post.fuelType}"></span></p>
+        <p><strong>Horsepower:</strong> <span th:text="${post.horsepower}"></span> HP</p>
+        <p><strong>City:</strong> <span th:text="${post.city}"></span></p>
+        <p><strong>Seller:</strong> <span th:text="${post.seller.name}"></span></p>
+      </div>
+
+      <p sec:authorize="isAuthenticated()">
+        <strong>Phone:</strong> <span th:text="${post.seller.phoneNumber}"></span>
+      </p>
+
+      <p sec:authorize="isAnonymous()">
+        <strong>Phone:</strong>
+        <a th:href="@{/login}" class="login-hint">Login to view seller phone number</a>
+      </p>
+
+      <div class="card-actions"
+           th:if="${currentUsername != null and carPostService.canEdit(post, currentUsername)}">
+        <a th:href="@{/cars/edit/{id}(id=${post.id})}" class="edit-btn">Edit</a>
+
+        <form th:action="@{/cars/delete/{id}(id=${post.id})}" method="post" style="display:inline;">
+          <button type="submit" class="delete-btn">Delete</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="pagination" th:if="${totalPages > 0 and !isMyListingsPage}">
+    <a class="page-btn"
+       th:if="${hasPrevious}"
+       th:href="@{/cars(
+          page=${currentPage - 1},
+          brandId=${selectedBrandId},
+          minPrice=${selectedMinPrice},
+          maxPrice=${selectedMaxPrice},
+          year=${selectedYear},
+          fuelType=${selectedFuelType},
+          sortBy=${selectedSortBy}
+       )}">
+      Previous
+    </a>
+
+    <span class="page-info">
+      Page <span th:text="${currentPage + 1}"></span> of <span th:text="${totalPages}"></span>
+    </span>
+
+    <a class="page-btn"
+       th:if="${hasNext}"
+       th:href="@{/cars(
+          page=${currentPage + 1},
+          brandId=${selectedBrandId},
+          minPrice=${selectedMinPrice},
+          maxPrice=${selectedMaxPrice},
+          year=${selectedYear},
+          fuelType=${selectedFuelType},
+          sortBy=${selectedSortBy}
+       )}">
+      Next
+    </a>
+  </div>
+
+  <div class="pagination" th:if="${totalPages > 0 and isMyListingsPage}">
+    <a class="page-btn"
+       th:if="${hasPrevious}"
+       th:href="@{/cars/my-posts(
+          page=${currentPage - 1},
+          sortBy=${selectedSortBy}
+       )}">
+      Previous
+    </a>
+
+    <span class="page-info">
+      Page <span th:text="${currentPage + 1}"></span> of <span th:text="${totalPages}"></span>
+    </span>
+
+    <a class="page-btn"
+       th:if="${hasNext}"
+       th:href="@{/cars/my-posts(
+          page=${currentPage + 1},
+          sortBy=${selectedSortBy}
+       )}">
+      Next
+    </a>
+  </div>
+
+</div>
+
+<script>
+  function toggleFilters() {
+    const panel = document.getElementById("filtersPanel");
+    if (panel) {
+      panel.classList.toggle("show");
+    }
+  }
+</script>
+
+</body>
+</html>
