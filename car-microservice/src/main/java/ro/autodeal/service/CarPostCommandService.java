@@ -11,7 +11,6 @@ import ro.autodeal.model.Brand;
 import ro.autodeal.model.CarModel;
 import ro.autodeal.model.CarPost;
 import ro.autodeal.model.FuelType;
-import ro.autodeal.model.Role;
 import ro.autodeal.model.User;
 import ro.autodeal.repository.BrandRepository;
 import ro.autodeal.repository.CarModelRepository;
@@ -26,17 +25,20 @@ public class CarPostCommandService {
     private final CarModelRepository carModelRepository;
     private final UserRepository userRepository;
     private final ApplicationEventPublisher eventPublisher;
+    private final UserClientService userClientService;
 
     public CarPostCommandService(CarPostRepository carPostRepository,
                                  BrandRepository brandRepository,
                                  CarModelRepository carModelRepository,
                                  UserRepository userRepository,
-                                 ApplicationEventPublisher eventPublisher) {
+                                 ApplicationEventPublisher eventPublisher,
+                                 UserClientService userClientService) {
         this.carPostRepository = carPostRepository;
         this.brandRepository = brandRepository;
         this.carModelRepository = carModelRepository;
         this.userRepository = userRepository;
         this.eventPublisher = eventPublisher;
+        this.userClientService = userClientService;
     }
 
     public void createCarPost(Long brandId,
@@ -57,7 +59,9 @@ public class CarPostCommandService {
 
         User seller = getCurrentLoggedInUser();
 
-        if (seller.getRole() != Role.SELLER && seller.getRole() != Role.ADMIN) {
+        String roleFromUserService = userClientService.getUserRole(seller.getUsername());
+
+        if (!"SELLER".equals(roleFromUserService) && !"ADMIN".equals(roleFromUserService)) {
             throw new RuntimeException("Only sellers or admins can create posts");
         }
 
@@ -122,7 +126,9 @@ AUTOdeal Team
 
         User currentUser = getCurrentLoggedInUser();
 
-        boolean isAdmin = currentUser.getRole() == Role.ADMIN;
+        String roleFromUserService = userClientService.getUserRole(currentUser.getUsername());
+
+        boolean isAdmin = "ADMIN".equals(roleFromUserService);
         boolean isOwner = existingPost.getSeller().getId().equals(currentUser.getId());
 
         if (!isAdmin && !isOwner) {
@@ -183,7 +189,9 @@ AUTOdeal Team
 
         User currentUser = getCurrentLoggedInUser();
 
-        boolean isAdmin = currentUser.getRole() == Role.ADMIN;
+        String roleFromUserService = userClientService.getUserRole(currentUser.getUsername());
+
+        boolean isAdmin = "ADMIN".equals(roleFromUserService);
         boolean isOwner = existingPost.getSeller().getId().equals(currentUser.getId());
 
         if (!isAdmin && !isOwner) {
