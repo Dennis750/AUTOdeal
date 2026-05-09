@@ -3,14 +3,18 @@ package ro.autodeal.controller;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import ro.autodeal.command.CarPostCommand;
+import ro.autodeal.command.CreateCarPostCommand;
+import ro.autodeal.command.DeleteCarPostCommand;
+import ro.autodeal.command.UpdateCarPostCommand;
 import ro.autodeal.dto.ModelOptionDto;
 import ro.autodeal.model.CarModel;
 import ro.autodeal.model.CarPost;
 import ro.autodeal.model.FuelType;
 import ro.autodeal.service.BrandService;
 import ro.autodeal.service.CarModelService;
-import ro.autodeal.service.CarPostQueryService;
 import ro.autodeal.service.CarPostCommandService;
+import ro.autodeal.service.CarPostQueryService;
 
 import java.util.List;
 
@@ -53,7 +57,21 @@ public class CarPostController {
                                 @RequestParam String city,
                                 @RequestParam(required = false) String imageUrl) {
 
-        carPostCommandService.createCarPost(brandId, modelId, year, price, mileage, fuelType, horsepower, city, imageUrl);
+        CarPostCommand command = new CreateCarPostCommand(
+                carPostCommandService,
+                brandId,
+                modelId,
+                year,
+                price,
+                mileage,
+                fuelType,
+                horsepower,
+                city,
+                imageUrl
+        );
+
+        command.execute();
+
         return "redirect:/cars";
     }
 
@@ -86,13 +104,34 @@ public class CarPostController {
                                 @RequestParam String city,
                                 @RequestParam(required = false) String imageUrl) {
 
-        carPostCommandService.updateCarPost(id, brandId, modelId, year, price, mileage, fuelType, horsepower, city, imageUrl);
+        CarPostCommand command = new UpdateCarPostCommand(
+                carPostCommandService,
+                id,
+                brandId,
+                modelId,
+                year,
+                price,
+                mileage,
+                fuelType,
+                horsepower,
+                city,
+                imageUrl
+        );
+
+        command.execute();
+
         return "redirect:/cars";
     }
 
     @PostMapping("/delete/{id}")
     public String deleteCarPost(@PathVariable Long id) {
-        carPostCommandService.deleteById(id);
+        CarPostCommand command = new DeleteCarPostCommand(
+                carPostCommandService,
+                id
+        );
+
+        command.execute();
+
         return "redirect:/cars";
     }
 
