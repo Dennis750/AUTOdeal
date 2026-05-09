@@ -9,16 +9,17 @@ import org.springframework.web.bind.annotation.RequestParam;
 import ro.autodeal.model.CarPost;
 import ro.autodeal.model.FuelType;
 import ro.autodeal.service.BrandService;
-import ro.autodeal.service.CarPostService;
+import ro.autodeal.service.CarPostQueryService;
 
 @Controller
 public class HomeController {
 
-    private final CarPostService carPostService;
+    private final CarPostQueryService carPostQueryService;
     private final BrandService brandService;
 
-    public HomeController(CarPostService carPostService, BrandService brandService) {
-        this.carPostService = carPostService;
+    public HomeController(CarPostQueryService carPostQueryService,
+                          BrandService brandService) {
+        this.carPostQueryService = carPostQueryService;
         this.brandService = brandService;
     }
 
@@ -40,7 +41,7 @@ public class HomeController {
 
         int pageSize = 9;
 
-        Page<CarPost> pageResult = carPostService.getFilteredPosts(
+        Page<CarPost> pageResult = carPostQueryService.getFilteredPosts(
                 brandId, minPrice, maxPrice, year, fuelType, sortBy, page, pageSize
         );
 
@@ -62,7 +63,9 @@ public class HomeController {
 
         String currentUsername = authentication != null ? authentication.getName() : null;
         model.addAttribute("currentUsername", currentUsername);
-        model.addAttribute("carPostService", carPostService);
+
+        model.addAttribute("carPostService", carPostQueryService);
+
         model.addAttribute("pageTitle", "Available Cars");
         model.addAttribute("isMyListingsPage", false);
 
@@ -82,7 +85,7 @@ public class HomeController {
         int pageSize = 9;
         String currentUsername = authentication.getName();
 
-        Page<CarPost> pageResult = carPostService.getMyPosts(
+        Page<CarPost> pageResult = carPostQueryService.getMyPosts(
                 currentUsername, sortBy, page, pageSize
         );
 
@@ -103,7 +106,7 @@ public class HomeController {
         model.addAttribute("hasNext", pageResult.hasNext());
 
         model.addAttribute("currentUsername", currentUsername);
-        model.addAttribute("carPostService", carPostService);
+        model.addAttribute("carPostService", carPostQueryService);
         model.addAttribute("pageTitle", "My Listings");
         model.addAttribute("isMyListingsPage", true);
 

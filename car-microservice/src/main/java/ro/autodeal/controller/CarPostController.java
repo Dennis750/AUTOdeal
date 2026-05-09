@@ -9,6 +9,7 @@ import ro.autodeal.model.CarPost;
 import ro.autodeal.model.FuelType;
 import ro.autodeal.service.BrandService;
 import ro.autodeal.service.CarModelService;
+import ro.autodeal.service.CarPostQueryService;
 import ro.autodeal.service.CarPostService;
 
 import java.util.List;
@@ -18,13 +19,16 @@ import java.util.List;
 public class CarPostController {
 
     private final CarPostService carPostService;
+    private final CarPostQueryService carPostQueryService;
     private final BrandService brandService;
     private final CarModelService carModelService;
 
     public CarPostController(CarPostService carPostService,
+                             CarPostQueryService carPostQueryService,
                              BrandService brandService,
                              CarModelService carModelService) {
         this.carPostService = carPostService;
+        this.carPostQueryService = carPostQueryService;
         this.brandService = brandService;
         this.carModelService = carModelService;
     }
@@ -55,7 +59,7 @@ public class CarPostController {
 
     @GetMapping("/edit/{id}")
     public String showEditForm(@PathVariable Long id, Model model) {
-        CarPost carPost = carPostService.getById(id);
+        CarPost carPost = carPostQueryService.getById(id);
         List<CarModel> models = carModelService.getModelsByBrandId(carPost.getBrand().getId());
 
         model.addAttribute("carPost", carPost);

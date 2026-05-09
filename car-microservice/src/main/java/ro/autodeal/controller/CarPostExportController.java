@@ -12,7 +12,7 @@ import ro.autodeal.export.JsonExportStrategy;
 import ro.autodeal.export.XmlExportStrategy;
 import ro.autodeal.model.CarPost;
 import ro.autodeal.model.FuelType;
-import ro.autodeal.service.CarPostService;
+import ro.autodeal.service.CarPostQueryService;
 
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -21,16 +21,16 @@ import java.util.List;
 @RequestMapping("/cars/export")
 public class CarPostExportController {
 
-    private final CarPostService carPostService;
+    private final CarPostQueryService carPostQueryService;
     private final JsonExportStrategy jsonExportStrategy;
     private final CsvExportStrategy csvExportStrategy;
     private final XmlExportStrategy xmlExportStrategy;
 
-    public CarPostExportController(CarPostService carPostService,
+    public CarPostExportController(CarPostQueryService carPostQueryService,
                                    JsonExportStrategy jsonExportStrategy,
                                    CsvExportStrategy csvExportStrategy,
                                    XmlExportStrategy xmlExportStrategy) {
-        this.carPostService = carPostService;
+        this.carPostQueryService = carPostQueryService;
         this.jsonExportStrategy = jsonExportStrategy;
         this.csvExportStrategy = csvExportStrategy;
         this.xmlExportStrategy = xmlExportStrategy;
@@ -44,7 +44,7 @@ public class CarPostExportController {
                                              @RequestParam(required = false) FuelType fuelType,
                                              @RequestParam(required = false) String sortBy) {
 
-        List<CarPost> posts = carPostService.getFilteredPostsForExport(
+        List<CarPost> posts = carPostQueryService.getFilteredPostsForExport(
                 brandId, minPrice, maxPrice, year, fuelType, sortBy
         );
 
@@ -64,7 +64,7 @@ public class CarPostExportController {
                                             @RequestParam(required = false) FuelType fuelType,
                                             @RequestParam(required = false) String sortBy) {
 
-        List<CarPost> posts = carPostService.getFilteredPostsForExport(
+        List<CarPost> posts = carPostQueryService.getFilteredPostsForExport(
                 brandId, minPrice, maxPrice, year, fuelType, sortBy
         );
 
@@ -84,7 +84,7 @@ public class CarPostExportController {
                                             @RequestParam(required = false) FuelType fuelType,
                                             @RequestParam(required = false) String sortBy) {
 
-        List<CarPost> posts = carPostService.getFilteredPostsForExport(
+        List<CarPost> posts = carPostQueryService.getFilteredPostsForExport(
                 brandId, minPrice, maxPrice, year, fuelType, sortBy
         );
 
