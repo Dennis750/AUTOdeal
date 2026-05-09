@@ -43,7 +43,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/cars", "/cars/models", "/cars/export/**", "/login", "/register").permitAll()
+                        .requestMatchers("/", "/cars", "/cars/models", "/cars/export/**", "/api/cars/**", "/login", "/register").permitAll()
                         .requestMatchers("/cars/create").hasAnyRole("SELLER", "ADMIN")
                         .requestMatchers("/cars/edit/**").hasAnyRole("SELLER", "ADMIN")
                         .requestMatchers("/cars/delete/**").hasAnyRole("SELLER", "ADMIN")
