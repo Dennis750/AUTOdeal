@@ -45,7 +45,7 @@ public class SecurityConfig {
                 .cors(cors -> {})
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/cars", "/cars/models", "/cars/export/**", "/api/cars/**", "/ws/chat", "/login", "/register").permitAll()
+                        .requestMatchers("/", "/cars", "/cars/models", "/cars/export/**", "/api/cars/**", "/api/brands/**", "/ws/chat", "/login", "/register").permitAll()
                         .requestMatchers("/cars/new", "/cars/create", "/cars/edit/**", "/cars/delete/**").hasAnyRole("SELLER", "ADMIN")
                         .anyRequest().authenticated()
                 )

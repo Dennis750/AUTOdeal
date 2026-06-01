@@ -1,6 +1,45 @@
 let socket = null;
 
+function requireLoginForChat() {
+    const currentUser = localStorage.getItem("currentUser");
+
+    if (!currentUser) {
+        const status = document.getElementById("chatStatus");
+        const chatForm = document.getElementById("chatForm");
+        const messages = document.getElementById("chatMessages");
+
+        if (status) {
+            status.className = "error";
+            status.innerHTML = "You must be logged in to access the chat.";
+        }
+
+        if (chatForm) {
+            chatForm.style.display = "none";
+        }
+
+        if (messages) {
+            messages.innerHTML = `
+                <div class="hidden-contact">
+                    Please log in first to use the AUTOdeal real-time chat.
+                </div>
+            `;
+        }
+
+        setTimeout(() => {
+            window.location.href = "login.html";
+        }, 1500);
+
+        return false;
+    }
+
+    return true;
+}
+
 function connectToChat() {
+    if (!requireLoginForChat()) {
+        return;
+    }
+
     const status = document.getElementById("chatStatus");
     const messages = document.getElementById("chatMessages");
 
@@ -44,6 +83,13 @@ if (chatForm) {
     chatForm.addEventListener("submit", function (event) {
         event.preventDefault();
 
+        if (!socket || socket.readyState !== WebSocket.OPEN) {
+            const status = document.getElementById("chatStatus");
+            status.className = "error";
+            status.innerHTML = "Chat is not connected.";
+            return;
+        }
+
         const input = document.getElementById("chatInput");
         const content = input.value.trim();
 
@@ -51,7 +97,7 @@ if (chatForm) {
             return;
         }
 
-        const sender = localStorage.getItem("currentUser") || "Anonymous";
+        const sender = localStorage.getItem("currentUser");
 
         const message = {
             sender: sender,

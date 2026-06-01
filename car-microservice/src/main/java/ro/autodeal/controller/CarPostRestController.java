@@ -30,6 +30,7 @@ public class CarPostRestController {
 
     @GetMapping
     public List<CarPostDto> getCars(@RequestParam(required = false) Long brandId,
+                                    @RequestParam(required = false) Long modelId,
                                     @RequestParam(required = false) Integer minPrice,
                                     @RequestParam(required = false) Integer maxPrice,
                                     @RequestParam(required = false) Integer year,
@@ -40,6 +41,7 @@ public class CarPostRestController {
 
         Page<CarPost> pageResult = carPostQueryService.getFilteredPosts(
                 brandId,
+                modelId,
                 minPrice,
                 maxPrice,
                 year,

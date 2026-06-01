@@ -6,11 +6,59 @@ function updateExportButtonsVisibility() {
         return;
     }
 
-    if (currentUser) {
-        exportButtons.style.display = "flex";
-    } else {
-        exportButtons.style.display = "none";
+    exportButtons.style.display = currentUser ? "block" : "none";
+}
+
+function formatPrice(price) {
+    if (price === null || price === undefined) {
+        return "Price unavailable";
     }
+
+    return Number(price).toLocaleString("de-DE") + " €";
+}
+
+function formatMileage(mileage) {
+    if (mileage === null || mileage === undefined) {
+        return "N/A";
+    }
+
+    return Number(mileage).toLocaleString("de-DE") + " km";
+}
+
+async function loadBrandFilters() {
+    const brandFilter = document.getElementById("brandFilter");
+
+    if (!brandFilter) {
+        return;
+    }
+
+    const brands = await apiGet(`${CAR_API_URL}/brands`);
+
+    brandFilter.innerHTML = `<option value="">All brands</option>`;
+
+    brands.forEach(brand => {
+        brandFilter.innerHTML += `<option value="${brand.id}">${brand.name}</option>`;
+    });
+}
+
+async function loadModelFilters() {
+    const brandFilter = document.getElementById("brandFilter");
+    const modelFilter = document.getElementById("modelFilter");
+
+    modelFilter.innerHTML = `<option value="">All models</option>`;
+    modelFilter.disabled = true;
+
+    if (!brandFilter.value) {
+        return;
+    }
+
+    const models = await apiGet(`${CAR_API_URL}/brands/${brandFilter.value}/models`);
+
+    models.forEach(model => {
+        modelFilter.innerHTML += `<option value="${model.id}">${model.name}</option>`;
+    });
+
+    modelFilter.disabled = false;
 }
 
 async function loadCars() {
@@ -20,6 +68,8 @@ async function loadCars() {
     carsContainer.innerHTML = "";
     message.innerHTML = "Loading cars...";
 
+    const brandId = document.getElementById("brandFilter").value;
+    const modelId = document.getElementById("modelFilter").value;
     const minPrice = document.getElementById("minPrice").value;
     const maxPrice = document.getElementById("maxPrice").value;
     const year = document.getElementById("year").value;
@@ -27,6 +77,14 @@ async function loadCars() {
     const sortBy = document.getElementById("sortBy").value;
 
     let url = `${CAR_API_URL}/cars?page=0&size=20`;
+
+    if (brandId) {
+        url += `&brandId=${brandId}`;
+    }
+
+    if (modelId) {
+        url += `&modelId=${modelId}`;
+    }
 
     if (minPrice) {
         url += `&minPrice=${minPrice}`;
@@ -60,7 +118,7 @@ async function loadCars() {
 
         for (const car of cars) {
             const card = document.createElement("div");
-            card.className = "card";
+            card.className = "card car-card";
 
             const currentUser = localStorage.getItem("currentUser");
             const currentRole = localStorage.getItem("currentRole");
@@ -86,20 +144,64 @@ async function loadCars() {
 
             const contactId = `contact-${car.id}`;
 
+            const imageHtml = car.imageUrl
+                ? `<img class="car-card-image" src="${car.imageUrl}" alt="${car.brand} ${car.model}">`
+                : `<div class="car-card-placeholder">
+                        <span>${car.brand}</span>
+                   </div>`;
+
             card.innerHTML = `
-                <h3>${car.brand} ${car.model}</h3>
-                <p><strong>ID:</strong> ${car.id}</p>
-                <p><strong>Year:</strong> ${car.year}</p>
-                <p><strong>Price:</strong> ${car.price} EUR</p>
-                <p><strong>Mileage:</strong> ${car.mileage} km</p>
-                <p><strong>Fuel:</strong> ${car.fuelType}</p>
-                <p><strong>Horsepower:</strong> ${car.horsepower} HP</p>
-                <p><strong>City:</strong> ${car.city}</p>
-                <p><strong>Seller:</strong> ${car.sellerUsername}</p>
+                ${imageHtml}
 
-                <div id="${contactId}" class="contact-box"></div>
+                <div class="car-card-body">
+                    <div class="car-card-top">
+                        <div>
+                            <p class="car-brand">${car.brand}</p>
+                            <h3>${car.brand} ${car.model}</h3>
+                        </div>
 
-                ${actionButtons}
+                        <span class="car-id">#${car.id}</span>
+                    </div>
+
+                    <div class="car-price">
+                        ${formatPrice(car.price)}
+                    </div>
+
+                    <div class="car-spec-grid">
+                        <div class="car-spec">
+                            <span>Year</span>
+                            <strong>${car.year}</strong>
+                        </div>
+
+                        <div class="car-spec">
+                            <span>Mileage</span>
+                            <strong>${formatMileage(car.mileage)}</strong>
+                        </div>
+
+                        <div class="car-spec">
+                            <span>Fuel</span>
+                            <strong>${car.fuelType}</strong>
+                        </div>
+
+                        <div class="car-spec">
+                            <span>Power</span>
+                            <strong>${car.horsepower} HP</strong>
+                        </div>
+                    </div>
+
+                    <div class="car-location">
+                        <span>Location</span>
+                        <strong>${car.city}</strong>
+                    </div>
+
+                    <div class="car-seller">
+                        Seller: <strong>${car.sellerUsername}</strong>
+                    </div>
+
+                    <div id="${contactId}" class="contact-box"></div>
+
+                    ${actionButtons}
+                </div>
             `;
 
             carsContainer.appendChild(card);
@@ -193,6 +295,9 @@ async function deleteCar(carId) {
 }
 
 function clearFilters() {
+    document.getElementById("brandFilter").value = "";
+    document.getElementById("modelFilter").innerHTML = `<option value="">All models</option>`;
+    document.getElementById("modelFilter").disabled = true;
     document.getElementById("minPrice").value = "";
     document.getElementById("maxPrice").value = "";
     document.getElementById("year").value = "";
@@ -209,14 +314,16 @@ function exportCars(format) {
         const message = document.getElementById("message");
 
         message.innerHTML = `
-        <div class="error">
-            You must be logged in to export car data.
-        </div>
-    `;
+            <div class="error">
+                You must be logged in to export car data.
+            </div>
+        `;
 
         return;
     }
 
+    const brandId = document.getElementById("brandFilter").value;
+    const modelId = document.getElementById("modelFilter").value;
     const minPrice = document.getElementById("minPrice").value;
     const maxPrice = document.getElementById("maxPrice").value;
     const year = document.getElementById("year").value;
@@ -226,6 +333,14 @@ function exportCars(format) {
     let url = `http://localhost:8081/cars/export/${format}`;
 
     const params = new URLSearchParams();
+
+    if (brandId) {
+        params.append("brandId", brandId);
+    }
+
+    if (modelId) {
+        params.append("modelId", modelId);
+    }
 
     if (minPrice) {
         params.append("minPrice", minPrice);
@@ -256,7 +371,16 @@ function exportCars(format) {
     window.location.href = url;
 }
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
     updateExportButtonsVisibility();
+    await loadBrandFilters();
+
+    document.getElementById("brandFilter").addEventListener("change", async () => {
+        await loadModelFilters();
+        loadCars();
+    });
+
+    document.getElementById("modelFilter").addEventListener("change", loadCars);
+
     loadCars();
 });

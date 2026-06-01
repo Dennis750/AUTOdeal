@@ -8,7 +8,9 @@
 <body>
 
 <nav>
-    <h1>AUTOdeal</h1>
+    <a href="index.html" class="logo-link">
+        <span class="logo-auto">AUTO</span><span class="logo-deal">deal</span>
+    </a>
 
     <div>
         <button onclick="setLanguage('en')">EN</button>
@@ -24,9 +26,35 @@
 </nav>
 
 <main>
-    <h2 data-i18n="availableCars">Available Cars</h2>
+    <section class="page-header page-header-split">
+        <div>
+            <p class="page-eyebrow">AUTOdeal inventory</p>
+            <h2 class="page-title" data-i18n="availableCars">Available Cars</h2>
+            <p class="page-description">
+                Browse premium listings, filter by brand, model, price, year and fuel type, then log in to view seller contact details.
+            </p>
+        </div>
 
-    <div class="filters">
+        <details id="exportButtons" class="export-panel">
+            <summary>Export data</summary>
+
+            <div class="export-menu">
+                <button onclick="exportCars('json')" type="button">Export as JSON</button>
+                <button onclick="exportCars('csv')" type="button">Export as CSV</button>
+                <button onclick="exportCars('xml')" type="button">Export as XML</button>
+            </div>
+        </details>
+    </section>
+
+    <section class="filters">
+        <select id="brandFilter">
+            <option value="">All brands</option>
+        </select>
+
+        <select id="modelFilter" disabled>
+            <option value="">All models</option>
+        </select>
+
         <input type="number" id="minPrice" placeholder="Min price">
         <input type="number" id="maxPrice" placeholder="Max price">
         <input type="number" id="year" placeholder="Year">
@@ -51,16 +79,11 @@
 
         <button onclick="loadCars()">Apply filters</button>
         <button onclick="clearFilters()">Clear</button>
-        <div id="exportButtons" class="export-buttons">
-            <button onclick="exportCars('json')">Download JSON</button>
-            <button onclick="exportCars('csv')">Download CSV</button>
-            <button onclick="exportCars('xml')">Download XML</button>
-        </div>
-    </div>
+    </section>
 
     <div id="message"></div>
 
-    <div id="carsContainer"></div>
+    <section id="carsContainer"></section>
 </main>
 
 <script src="js/api.js"></script>

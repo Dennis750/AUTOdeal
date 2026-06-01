@@ -8,7 +8,9 @@
 <body>
 
 <nav>
-    <h1>AUTOdeal</h1>
+    <a href="index.html" class="logo-link">
+        <span class="logo-auto">AUTO</span><span class="logo-deal">deal</span>
+    </a>
 
     <div>
         <button onclick="setLanguage('en')">EN</button>
@@ -17,43 +19,61 @@
 
     <a href="index.html" data-i18n="home">Home</a>
     <a href="cars.html" data-i18n="cars">Cars</a>
+    <a href="create-car.html">Create Car</a>
     <a href="login.html" data-i18n="login">Login</a>
     <a href="register.html" data-i18n="register">Register</a>
     <a href="chat.html" data-i18n="chat">Chat</a>
 </nav>
 
 <main>
-    <h2 data-i18n="register">Register</h2>
+    <section class="auth-layout">
+        <div class="auth-intro">
+            <p class="page-eyebrow">Join AUTOdeal</p>
+            <h2>Create your account.</h2>
+            <p>
+                Register as a visitor to access seller contact details, or as a seller to publish and manage your own car listings.
+            </p>
+        </div>
 
-    <div id="message"></div>
+        <div class="auth-card">
+            <h2 data-i18n="register">Register</h2>
 
-    <form id="registerForm" class="form-card">
-        <label>Username</label>
-        <input type="text" id="username" required>
+            <div id="message"></div>
 
-        <label>Password</label>
-        <input type="password" id="password" required>
+            <form id="registerForm" class="form-card luxury-form">
+                <label>Username</label>
+                <input type="text" id="username" required>
 
-        <label>Confirm password</label>
-        <input type="password" id="confirmPassword" required>
+                <label>Password</label>
+                <input type="password" id="password" required>
 
-        <label>Name</label>
-        <input type="text" id="name" required>
+                <label>Confirm password</label>
+                <input type="password" id="confirmPassword" required>
 
-        <label>Phone number</label>
-        <input type="text" id="phoneNumber" required>
+                <label>Name</label>
+                <input type="text" id="name" required>
 
-        <label>Email</label>
-        <input type="email" id="email">
+                <label>Phone number</label>
+                <input type="text" id="phoneNumber" required>
 
-        <label>Role</label>
-        <select id="role" required>
-            <option value="VISITOR">Visitor</option>
-            <option value="SELLER">Seller</option>
-        </select>
+                <label>Email</label>
+                <input type="email" id="email">
 
-        <button type="submit">Register</button>
-    </form>
+                <label>Role</label>
+                <select id="role" required>
+                    <option value="VISITOR">Visitor</option>
+                    <option value="SELLER">Seller</option>
+                </select>
+
+                <button type="submit">Create Account</button>
+            </form>
+
+            <p class="auth-switch">
+                Already have an account?
+                <a href="login.html">Log in</a>
+            </p>
+        </div>
+    </section>
 </main>
 
 <script src="js/api.js"></script>

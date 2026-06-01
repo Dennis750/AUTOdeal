@@ -8,7 +8,9 @@
 <body>
 
 <nav>
-    <h1>AUTOdeal</h1>
+    <a href="index.html" class="logo-link">
+        <span class="logo-auto">AUTO</span><span class="logo-deal">deal</span>
+    </a>
 
     <div>
         <button onclick="setLanguage('en')">EN</button>
@@ -24,47 +26,63 @@
 </nav>
 
 <main>
-    <h2>Edit Car Post</h2>
+    <section class="form-page-layout">
+        <div class="form-page-intro">
+            <p class="page-eyebrow">Listing management</p>
+            <h2>Edit your car post.</h2>
+            <p>
+                Update listing information such as price, mileage, horsepower or city. Changes are saved through the car microservice API.
+            </p>
 
-    <div id="message"></div>
+            <div id="currentCarInfo" class="form-note"></div>
+        </div>
 
-    <p id="currentCarInfo" class="hint"></p>
+        <div class="form-page-card">
+            <h2>Edit Car Post</h2>
 
-    <form id="editCarForm" class="form-card">
-        <label>Brand ID</label>
-        <input type="number" id="brandId" required>
+            <div id="message"></div>
 
-        <label>Model ID</label>
-        <input type="number" id="modelId" required>
+            <form id="editCarForm" class="form-card luxury-form">
+                <label>Brand</label>
+                <select id="brandId" required>
+                    <option value="">Select brand</option>
+                </select>
 
-        <label>Year</label>
-        <input type="number" id="year" required>
+                <label>Model</label>
+                <select id="modelId" required disabled>
+                    <option value="">Select model</option>
+                </select>
 
-        <label>Price</label>
-        <input type="number" id="price" required>
+                <label>Year</label>
+                <input type="number" id="year" required>
 
-        <label>Mileage</label>
-        <input type="number" id="mileage" required>
+                <label>Price</label>
+                <input type="number" id="price" required>
 
-        <label>Fuel Type</label>
-        <select id="fuelType" required>
-            <option value="PETROL">PETROL</option>
-            <option value="DIESEL">DIESEL</option>
-            <option value="HYBRID">HYBRID</option>
-            <option value="ELECTRIC">ELECTRIC</option>
-        </select>
+                <label>Mileage</label>
+                <input type="number" id="mileage" required>
 
-        <label>Horsepower</label>
-        <input type="number" id="horsepower" required>
+                <label>Fuel Type</label>
+                <select id="fuelType" required>
+                    <option value="PETROL">PETROL</option>
+                    <option value="DIESEL">DIESEL</option>
+                    <option value="HYBRID">HYBRID</option>
+                    <option value="ELECTRIC">ELECTRIC</option>
+                </select>
 
-        <label>City</label>
-        <input type="text" id="city" required>
+                <label>Horsepower</label>
+                <input type="number" id="horsepower" required>
 
-        <label>Image URL</label>
-        <input type="text" id="imageUrl">
+                <label>City</label>
+                <input type="text" id="city" required>
 
-        <button type="submit">Update Car</button>
-    </form>
+                <label>Image URL</label>
+                <input type="text" id="imageUrl">
+
+                <button type="submit">Update Car</button>
+            </form>
+        </div>
+    </section>
 </main>
 
 <script src="js/api.js"></script>

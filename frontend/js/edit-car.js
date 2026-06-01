@@ -5,6 +5,51 @@ const currentCarInfo = document.getElementById("currentCarInfo");
 const params = new URLSearchParams(window.location.search);
 const carId = params.get("id");
 
+async function loadBrandsForEditForm(selectedBrandId, selectedModelId) {
+    const brandSelect = document.getElementById("brandId");
+    const modelSelect = document.getElementById("modelId");
+
+    const brands = await apiGet(`${CAR_API_URL}/brands`);
+
+    brandSelect.innerHTML = `<option value="">Select brand</option>`;
+
+    brands.forEach(brand => {
+        brandSelect.innerHTML += `<option value="${brand.id}">${brand.name}</option>`;
+    });
+
+    if (selectedBrandId) {
+        brandSelect.value = selectedBrandId;
+        await loadModelsForEditForm(selectedBrandId, selectedModelId);
+    }
+
+    brandSelect.addEventListener("change", async () => {
+        await loadModelsForEditForm(brandSelect.value, null);
+    });
+}
+
+async function loadModelsForEditForm(brandId, selectedModelId) {
+    const modelSelect = document.getElementById("modelId");
+
+    modelSelect.innerHTML = `<option value="">Select model</option>`;
+    modelSelect.disabled = true;
+
+    if (!brandId) {
+        return;
+    }
+
+    const models = await apiGet(`${CAR_API_URL}/brands/${brandId}/models`);
+
+    models.forEach(model => {
+        modelSelect.innerHTML += `<option value="${model.id}">${model.name}</option>`;
+    });
+
+    modelSelect.disabled = false;
+
+    if (selectedModelId) {
+        modelSelect.value = selectedModelId;
+    }
+}
+
 async function loadCarForEdit() {
     if (!carId) {
         message.innerHTML = `
@@ -47,8 +92,8 @@ async function loadCarForEdit() {
 
         currentCarInfo.innerHTML = `Editing: ${car.brand} ${car.model}, owned by ${car.sellerUsername}`;
 
-        document.getElementById("brandId").value = car.brandId;
-        document.getElementById("modelId").value = car.modelId;
+        await loadBrandsForEditForm(car.brandId, car.modelId);
+
         document.getElementById("year").value = car.year;
         document.getElementById("price").value = car.price;
         document.getElementById("mileage").value = car.mileage;

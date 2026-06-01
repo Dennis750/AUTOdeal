@@ -14,6 +14,10 @@ public class CarPostSpecification {
         return (root, query, cb) -> cb.equal(root.get("brand").get("id"), brandId);
     }
 
+    public static Specification<CarPost> hasModelId(Long modelId) {
+        return (root, query, cb) -> cb.equal(root.get("model").get("id"), modelId);
+    }
+
     public static Specification<CarPost> hasMinPrice(Integer minPrice) {
         return (root, query, cb) -> cb.greaterThanOrEqualTo(root.get("price"), minPrice);
     }

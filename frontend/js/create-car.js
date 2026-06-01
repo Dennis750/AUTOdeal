@@ -1,5 +1,35 @@
 const createCarForm = document.getElementById("createCarForm");
 
+async function loadBrandsForCreateForm() {
+    const brandSelect = document.getElementById("brandId");
+    const modelSelect = document.getElementById("modelId");
+
+    const brands = await apiGet(`${CAR_API_URL}/brands`);
+
+    brandSelect.innerHTML = `<option value="">Select brand</option>`;
+
+    brands.forEach(brand => {
+        brandSelect.innerHTML += `<option value="${brand.id}">${brand.name}</option>`;
+    });
+
+    brandSelect.addEventListener("change", async () => {
+        modelSelect.innerHTML = `<option value="">Select model</option>`;
+        modelSelect.disabled = true;
+
+        if (!brandSelect.value) {
+            return;
+        }
+
+        const models = await apiGet(`${CAR_API_URL}/brands/${brandSelect.value}/models`);
+
+        models.forEach(model => {
+            modelSelect.innerHTML += `<option value="${model.id}">${model.name}</option>`;
+        });
+
+        modelSelect.disabled = false;
+    });
+}
+
 if (createCarForm) {
     createCarForm.addEventListener("submit", async function (event) {
         event.preventDefault();
@@ -50,6 +80,8 @@ if (createCarForm) {
             `;
 
             createCarForm.reset();
+            document.getElementById("modelId").innerHTML = `<option value="">Select model</option>`;
+            document.getElementById("modelId").disabled = true;
         } catch (error) {
             console.error(error);
 
@@ -61,3 +93,5 @@ if (createCarForm) {
         }
     });
 }
+
+document.addEventListener("DOMContentLoaded", loadBrandsForCreateForm);

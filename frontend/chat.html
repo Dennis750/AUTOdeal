@@ -8,7 +8,9 @@
 <body>
 
 <nav>
-    <h1>AUTOdeal</h1>
+    <a href="index.html" class="logo-link">
+        <span class="logo-auto">AUTO</span><span class="logo-deal">deal</span>
+    </a>
 
     <div>
         <button onclick="setLanguage('en')">EN</button>
@@ -17,26 +19,48 @@
 
     <a href="index.html" data-i18n="home">Home</a>
     <a href="cars.html" data-i18n="cars">Cars</a>
+    <a href="create-car.html">Create Car</a>
     <a href="login.html" data-i18n="login">Login</a>
     <a href="register.html" data-i18n="register">Register</a>
     <a href="chat.html" data-i18n="chat">Chat</a>
 </nav>
 
 <main>
-    <h2>Real-time Chat</h2>
+    <section class="chat-page-layout">
+        <div class="chat-intro">
+            <p class="page-eyebrow">Live support</p>
+            <h2>Real-time marketplace chat.</h2>
+            <p>
+                Send messages instantly through the AUTOdeal WebSocket chat. All connected users receive messages in real time.
+            </p>
 
-    <div id="chatStatus" class="error">
-        Connecting to chat server...
-    </div>
+            <div class="form-note">
+                Messages are broadcast globally to all users currently connected to the chat.
+            </div>
+        </div>
 
-    <div class="chat-container">
-        <div id="chatMessages" class="chat-messages"></div>
+        <div class="chat-page-card">
+            <div class="chat-header">
+                <div>
+                    <h2>Community Chat</h2>
+                    <p>Connected users can exchange messages instantly.</p>
+                </div>
+            </div>
 
-        <form id="chatForm" class="chat-form">
-            <input type="text" id="chatInput" placeholder="Write a message..." required>
-            <button type="submit">Send</button>
-        </form>
-    </div>
+            <div id="chatStatus" class="error">
+                Connecting to chat server...
+            </div>
+
+            <div class="chat-container">
+                <div id="chatMessages" class="chat-messages"></div>
+
+                <form id="chatForm" class="chat-form">
+                    <input type="text" id="chatInput" placeholder="Write a message..." required>
+                    <button type="submit">Send</button>
+                </form>
+            </div>
+        </div>
+    </section>
 </main>
 
 <script src="js/i18n.js"></script>

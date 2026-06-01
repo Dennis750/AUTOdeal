@@ -42,7 +42,7 @@ public class HomeController {
         int pageSize = 9;
 
         Page<CarPost> pageResult = carPostQueryService.getFilteredPosts(
-                brandId, minPrice, maxPrice, year, fuelType, sortBy, page, pageSize
+                brandId, null, minPrice, maxPrice, year, fuelType, sortBy, page, pageSize
         );
 
         model.addAttribute("carPosts", pageResult.getContent());

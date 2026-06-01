@@ -14,9 +14,9 @@ function updateNavbar() {
         const href = link.getAttribute("href");
 
         if (!currentUser) {
-            // Visitor: can see Home, Cars, Login, Register, Chat
-            // Visitor cannot see Create Car
-            if (href === "create-car.html") {
+            // Visitor: can see Home, Cars, Login, Register
+            // Visitor cannot see Create Car or Chat
+            if (href === "create-car.html" || href === "chat.html") {
                 link.style.display = "none";
             } else {
                 link.style.display = "inline";
@@ -32,6 +32,11 @@ function updateNavbar() {
             // Only SELLER and ADMIN can see Create Car
             if (href === "create-car.html" && currentRole !== "SELLER" && currentRole !== "ADMIN") {
                 link.style.display = "none";
+            }
+
+            // Any logged-in user can see Chat
+            if (href === "chat.html") {
+                link.style.display = "inline";
             }
         }
     });
@@ -58,6 +63,16 @@ function updateNavbar() {
     }
 
     nav.appendChild(authBox);
+
+    const heroAuthLinks = document.querySelectorAll(".hero-auth-link");
+
+    heroAuthLinks.forEach(link => {
+        if (currentUser) {
+            link.style.display = "none";
+        } else {
+            link.style.display = "inline-block";
+        }
+    });
 }
 
 function logoutUser() {

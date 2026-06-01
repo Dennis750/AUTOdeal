@@ -28,6 +28,7 @@ public class CarPostQueryService {
     }
 
     public Page<CarPost> getFilteredPosts(Long brandId,
+                                          Long modelId,
                                           Integer minPrice,
                                           Integer maxPrice,
                                           Integer year,
@@ -36,32 +37,63 @@ public class CarPostQueryService {
                                           int page,
                                           int size) {
 
-        Specification<CarPost> spec = Specification.where(CarPostSpecification.isVisible());
-
-        if (brandId != null) {
-            spec = spec.and(CarPostSpecification.hasBrandId(brandId));
-        }
-
-        if (minPrice != null) {
-            spec = spec.and(CarPostSpecification.hasMinPrice(minPrice));
-        }
-
-        if (maxPrice != null) {
-            spec = spec.and(CarPostSpecification.hasMaxPrice(maxPrice));
-        }
-
-        if (year != null) {
-            spec = spec.and(CarPostSpecification.hasYear(year));
-        }
-
-        if (fuelType != null) {
-            spec = spec.and(CarPostSpecification.hasFuelType(fuelType));
-        }
+        Specification<CarPost> spec = buildFilterSpecification(
+                brandId,
+                modelId,
+                minPrice,
+                maxPrice,
+                year,
+                fuelType
+        );
 
         Sort sort = getSort(sortBy);
         PageRequest pageRequest = PageRequest.of(page, size, sort);
 
         return carPostRepository.findAll(spec, pageRequest);
+    }
+
+    public Page<CarPost> getFilteredPosts(Long brandId,
+                                          Integer minPrice,
+                                          Integer maxPrice,
+                                          Integer year,
+                                          FuelType fuelType,
+                                          String sortBy,
+                                          int page,
+                                          int size) {
+
+        return getFilteredPosts(
+                brandId,
+                null,
+                minPrice,
+                maxPrice,
+                year,
+                fuelType,
+                sortBy,
+                page,
+                size
+        );
+    }
+
+    public List<CarPost> getFilteredPostsForExport(Long brandId,
+                                                   Long modelId,
+                                                   Integer minPrice,
+                                                   Integer maxPrice,
+                                                   Integer year,
+                                                   FuelType fuelType,
+                                                   String sortBy) {
+
+        Specification<CarPost> spec = buildFilterSpecification(
+                brandId,
+                modelId,
+                minPrice,
+                maxPrice,
+                year,
+                fuelType
+        );
+
+        Sort sort = getSort(sortBy);
+
+        return carPostRepository.findAll(spec, sort);
     }
 
     public List<CarPost> getFilteredPostsForExport(Long brandId,
@@ -71,10 +103,32 @@ public class CarPostQueryService {
                                                    FuelType fuelType,
                                                    String sortBy) {
 
+        return getFilteredPostsForExport(
+                brandId,
+                null,
+                minPrice,
+                maxPrice,
+                year,
+                fuelType,
+                sortBy
+        );
+    }
+
+    private Specification<CarPost> buildFilterSpecification(Long brandId,
+                                                            Long modelId,
+                                                            Integer minPrice,
+                                                            Integer maxPrice,
+                                                            Integer year,
+                                                            FuelType fuelType) {
+
         Specification<CarPost> spec = Specification.where(CarPostSpecification.isVisible());
 
         if (brandId != null) {
             spec = spec.and(CarPostSpecification.hasBrandId(brandId));
+        }
+
+        if (modelId != null) {
+            spec = spec.and(CarPostSpecification.hasModelId(modelId));
         }
 
         if (minPrice != null) {
@@ -93,9 +147,7 @@ public class CarPostQueryService {
             spec = spec.and(CarPostSpecification.hasFuelType(fuelType));
         }
 
-        Sort sort = getSort(sortBy);
-
-        return carPostRepository.findAll(spec, sort);
+        return spec;
     }
 
     public Page<CarPost> getMyPosts(String username,
@@ -126,6 +178,7 @@ public class CarPostQueryService {
         }
 
         User user = userRepository.findByUsername(username).orElse(null);
+
         if (user == null) {
             return false;
         }

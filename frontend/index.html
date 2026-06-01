@@ -2,13 +2,15 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>AUTOdeal - Home</title>
+    <title>AUTOdeal - Luxury Car Marketplace</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
 <nav>
-    <h1>AUTOdeal</h1>
+    <a href="index.html" class="logo-link">
+        <span class="logo-auto">AUTO</span><span class="logo-deal">deal</span>
+    </a>
 
     <div>
         <button onclick="setLanguage('en')">EN</button>
@@ -26,33 +28,46 @@
 <main>
     <section class="hero">
         <div class="hero-content">
-            <h2>Find your next car on AUTOdeal</h2>
+            <div class="hero-eyebrow">Premium car marketplace</div>
+
+            <h2>Find your next car with confidence.</h2>
 
             <p>
-                Browse car listings, compare prices, filter by fuel type and contact sellers after logging in.
+                AUTOdeal is a clean and modern car marketplace where visitors can browse public listings,
+                while registered users can access seller contact details and manage their own car posts.
             </p>
 
             <div class="hero-actions">
                 <a class="button" href="cars.html">Browse Cars</a>
-                <a class="secondary-button" href="register.html">Create Account</a>
+                <a class="secondary-button hero-auth-link" href="login.html">Login</a>
+                <a class="secondary-button hero-auth-link" href="register.html">Create Account</a>
             </div>
         </div>
     </section>
 
     <section class="info-grid">
         <div class="info-card">
-            <h3>Browse without login</h3>
-            <p>You can view all public car listings without creating an account.</p>
+            <div class="gold-line"></div>
+            <h3>Browse freely</h3>
+            <p>
+                Visitors can explore available car listings, filter results and compare vehicles without logging in.
+            </p>
         </div>
 
         <div class="info-card">
-            <h3>Contact sellers after login</h3>
-            <p>Seller email and phone number are visible only to logged-in users.</p>
+            <div class="gold-line"></div>
+            <h3>Private seller details</h3>
+            <p>
+                Phone numbers and email addresses are shown only after login, keeping seller information protected.
+            </p>
         </div>
 
         <div class="info-card">
-            <h3>Sell your own car</h3>
-            <p>Register as a seller, then create, edit and delete your own car posts.</p>
+            <div class="gold-line"></div>
+            <h3>Sell with control</h3>
+            <p>
+                Sellers can create, edit and delete their own listings through a dedicated client-server interface.
+            </p>
         </div>
     </section>
 </main>
