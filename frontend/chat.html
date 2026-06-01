@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AUTOdeal - Chat</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<nav>
+    <h1>AUTOdeal</h1>
+
+    <div>
+        <button onclick="setLanguage('en')">EN</button>
+        <button onclick="setLanguage('ro')">RO</button>
+    </div>
+
+    <a href="index.html" data-i18n="home">Home</a>
+    <a href="cars.html" data-i18n="cars">Cars</a>
+    <a href="login.html" data-i18n="login">Login</a>
+    <a href="register.html" data-i18n="register">Register</a>
+    <a href="chat.html" data-i18n="chat">Chat</a>
+</nav>
+
+<main>
+    <h2>Real-time Chat</h2>
+
+    <div id="chatStatus" class="error">
+        Connecting to chat server...
+    </div>
+
+    <div class="chat-container">
+        <div id="chatMessages" class="chat-messages"></div>
+
+        <form id="chatForm" class="chat-form">
+            <input type="text" id="chatInput" placeholder="Write a message..." required>
+            <button type="submit">Send</button>
+        </form>
+    </div>
+</main>
+
+<script src="js/i18n.js"></script>
+<script src="js/navbar.js"></script>
+<script src="js/chat.js"></script>
+
+</body>
+</html>

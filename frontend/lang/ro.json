@@ -1,0 +1,18 @@
+{
+  "home": "Acasă",
+  "cars": "Mașini",
+  "login": "Autentificare",
+  "register": "Înregistrare",
+  "chat": "Chat",
+  "welcome": "Bine ai venit pe AUTOdeal",
+  "homeDescription": "Caută și gestionează anunțuri auto printr-o arhitectură client-server separată.",
+  "viewCars": "Vezi mașinile",
+  "availableCars": "Mașini disponibile",
+  "loadingCars": "Se încarcă mașinile...",
+  "errorLoadingCars": "Nu s-au putut încărca mașinile.",
+  "price": "Preț",
+  "year": "An",
+  "mileage": "Kilometraj",
+  "fuel": "Combustibil",
+  "city": "Oraș"
+}

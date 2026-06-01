@@ -63,4 +63,14 @@ public class UserService {
 
         userRepository.save(user);
     }
+
+    public User loginUser(String username, String password) {
+        User user = getByUsername(username);
+
+        if (!passwordEncoder.matches(password, user.getPassword())) {
+            throw new RuntimeException("Invalid username or password");
+        }
+
+        return user;
+    }
 }

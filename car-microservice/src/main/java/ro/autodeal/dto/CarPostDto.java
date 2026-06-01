@@ -1,17 +1,18 @@
 package ro.autodeal.dto;
 
 import ro.autodeal.model.CarPost;
-import ro.autodeal.model.FuelType;
 
 public class CarPostDto {
 
     private Long id;
+    private Long brandId;
+    private Long modelId;
     private String brand;
     private String model;
     private Integer year;
     private Integer price;
     private Integer mileage;
-    private FuelType fuelType;
+    private String fuelType;
     private Integer horsepower;
     private String city;
     private String imageUrl;
@@ -20,40 +21,50 @@ public class CarPostDto {
     public CarPostDto() {
     }
 
-    public CarPostDto(Long id, String brand, String model, Integer year, Integer price,
-                      Integer mileage, FuelType fuelType, Integer horsepower,
-                      String city, String imageUrl, String sellerUsername) {
-        this.id = id;
-        this.brand = brand;
-        this.model = model;
-        this.year = year;
-        this.price = price;
-        this.mileage = mileage;
-        this.fuelType = fuelType;
-        this.horsepower = horsepower;
-        this.city = city;
-        this.imageUrl = imageUrl;
-        this.sellerUsername = sellerUsername;
-    }
-
     public static CarPostDto fromCarPost(CarPost carPost) {
-        return new CarPostDto(
-                carPost.getId(),
-                carPost.getBrand().getName(),
-                carPost.getModel().getName(),
-                carPost.getYear(),
-                carPost.getPrice(),
-                carPost.getMileage(),
-                carPost.getFuelType(),
-                carPost.getHorsepower(),
-                carPost.getCity(),
-                carPost.getImageUrl(),
-                carPost.getSeller().getUsername()
-        );
+        CarPostDto dto = new CarPostDto();
+
+        dto.setId(carPost.getId());
+
+        if (carPost.getBrand() != null) {
+            dto.setBrandId(carPost.getBrand().getId());
+            dto.setBrand(carPost.getBrand().getName());
+        }
+
+        if (carPost.getModel() != null) {
+            dto.setModelId(carPost.getModel().getId());
+            dto.setModel(carPost.getModel().getName());
+        }
+
+        dto.setYear(carPost.getYear());
+        dto.setPrice(carPost.getPrice());
+        dto.setMileage(carPost.getMileage());
+
+        if (carPost.getFuelType() != null) {
+            dto.setFuelType(carPost.getFuelType().name());
+        }
+
+        dto.setHorsepower(carPost.getHorsepower());
+        dto.setCity(carPost.getCity());
+        dto.setImageUrl(carPost.getImageUrl());
+
+        if (carPost.getSeller() != null) {
+            dto.setSellerUsername(carPost.getSeller().getUsername());
+        }
+
+        return dto;
     }
 
     public Long getId() {
         return id;
+    }
+
+    public Long getBrandId() {
+        return brandId;
+    }
+
+    public Long getModelId() {
+        return modelId;
     }
 
     public String getBrand() {
@@ -76,7 +87,7 @@ public class CarPostDto {
         return mileage;
     }
 
-    public FuelType getFuelType() {
+    public String getFuelType() {
         return fuelType;
     }
 
@@ -100,6 +111,14 @@ public class CarPostDto {
         this.id = id;
     }
 
+    public void setBrandId(Long brandId) {
+        this.brandId = brandId;
+    }
+
+    public void setModelId(Long modelId) {
+        this.modelId = modelId;
+    }
+
     public void setBrand(String brand) {
         this.brand = brand;
     }
@@ -120,7 +139,7 @@ public class CarPostDto {
         this.mileage = mileage;
     }
 
-    public void setFuelType(FuelType fuelType) {
+    public void setFuelType(String fuelType) {
         this.fuelType = fuelType;
     }
 

@@ -1,17 +1,19 @@
 # AUTOdeal Frontend
 
-This folder represents the frontend layer of the AUTOdeal microservices architecture.
+This folder contains the separate client application for the AUTOdeal system.
 
-For the current Assignment 3 implementation, the web interface is still served through the `car-microservice` using Thymeleaf templates.
+For Assignment 4, the frontend is separated from the backend services and communicates with them through exposed APIs.
 
-The frontend layer is responsible for:
+The frontend is responsible for:
 - displaying available cars
-- displaying filters and sorting options
-- providing buttons for JSON, CSV and XML export
-- allowing authenticated users to create, update and delete car posts
+- displaying filtering and sorting options
+- allowing users to log in and register
+- allowing users to create, update and delete car posts
+- supporting internationalization with English and Romanian
+- providing a real-time chat interface
 
 The backend functionality is split into:
 - `car-microservice`, running on port 8081
 - `user-microservice`, running on port 8082
 
-The car microservice communicates with the user microservice through REST.
+The frontend communicates with the backend through REST APIs and WebSocket communication.

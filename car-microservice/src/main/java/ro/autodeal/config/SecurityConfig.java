@@ -42,11 +42,11 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+                .cors(cors -> {})
+                .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/cars", "/cars/models", "/cars/export/**", "/api/cars/**", "/login", "/register").permitAll()
-                        .requestMatchers("/cars/create").hasAnyRole("SELLER", "ADMIN")
-                        .requestMatchers("/cars/edit/**").hasAnyRole("SELLER", "ADMIN")
-                        .requestMatchers("/cars/delete/**").hasAnyRole("SELLER", "ADMIN")
+                        .requestMatchers("/", "/cars", "/cars/models", "/cars/export/**", "/api/cars/**", "/ws/chat", "/login", "/register").permitAll()
+                        .requestMatchers("/cars/new", "/cars/create", "/cars/edit/**", "/cars/delete/**").hasAnyRole("SELLER", "ADMIN")
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
@@ -55,7 +55,7 @@ public class SecurityConfig {
                         .permitAll()
                 )
                 .logout(logout -> logout
-                        .logoutSuccessUrl("/cars?logout")
+                        .logoutSuccessUrl("/login?logout")
                         .permitAll()
                 );
 

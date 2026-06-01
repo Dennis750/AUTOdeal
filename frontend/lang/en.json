@@ -1,0 +1,18 @@
+{
+  "home": "Home",
+  "cars": "Cars",
+  "login": "Login",
+  "register": "Register",
+  "chat": "Chat",
+  "welcome": "Welcome to AUTOdeal",
+  "homeDescription": "Browse and manage car listings through a separated client-server architecture.",
+  "viewCars": "View Cars",
+  "availableCars": "Available Cars",
+  "loadingCars": "Loading cars...",
+  "errorLoadingCars": "Could not load cars.",
+  "price": "Price",
+  "year": "Year",
+  "mileage": "Mileage",
+  "fuel": "Fuel",
+  "city": "City"
+}

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AUTOdeal - Register</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<nav>
+    <h1>AUTOdeal</h1>
+
+    <div>
+        <button onclick="setLanguage('en')">EN</button>
+        <button onclick="setLanguage('ro')">RO</button>
+    </div>
+
+    <a href="index.html" data-i18n="home">Home</a>
+    <a href="cars.html" data-i18n="cars">Cars</a>
+    <a href="login.html" data-i18n="login">Login</a>
+    <a href="register.html" data-i18n="register">Register</a>
+    <a href="chat.html" data-i18n="chat">Chat</a>
+</nav>
+
+<main>
+    <h2 data-i18n="register">Register</h2>
+
+    <div id="message"></div>
+
+    <form id="registerForm" class="form-card">
+        <label>Username</label>
+        <input type="text" id="username" required>
+
+        <label>Password</label>
+        <input type="password" id="password" required>
+
+        <label>Confirm password</label>
+        <input type="password" id="confirmPassword" required>
+
+        <label>Name</label>
+        <input type="text" id="name" required>
+
+        <label>Phone number</label>
+        <input type="text" id="phoneNumber" required>
+
+        <label>Email</label>
+        <input type="email" id="email">
+
+        <label>Role</label>
+        <select id="role" required>
+            <option value="VISITOR">Visitor</option>
+            <option value="SELLER">Seller</option>
+        </select>
+
+        <button type="submit">Register</button>
+    </form>
+</main>
+
+<script src="js/api.js"></script>
+<script src="js/i18n.js"></script>
+<script src="js/navbar.js"></script>
+<script src="js/auth.js"></script>
+
+</body>
+</html>

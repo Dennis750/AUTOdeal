@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AUTOdeal - Cars</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<nav>
+    <h1>AUTOdeal</h1>
+
+    <div>
+        <button onclick="setLanguage('en')">EN</button>
+        <button onclick="setLanguage('ro')">RO</button>
+    </div>
+
+    <a href="index.html" data-i18n="home">Home</a>
+    <a href="cars.html" data-i18n="cars">Cars</a>
+    <a href="create-car.html">Create Car</a>
+    <a href="login.html" data-i18n="login">Login</a>
+    <a href="register.html" data-i18n="register">Register</a>
+    <a href="chat.html" data-i18n="chat">Chat</a>
+</nav>
+
+<main>
+    <h2 data-i18n="availableCars">Available Cars</h2>
+
+    <div class="filters">
+        <input type="number" id="minPrice" placeholder="Min price">
+        <input type="number" id="maxPrice" placeholder="Max price">
+        <input type="number" id="year" placeholder="Year">
+
+        <select id="fuelType">
+            <option value="">All fuel types</option>
+            <option value="PETROL">Petrol</option>
+            <option value="DIESEL">Diesel</option>
+            <option value="HYBRID">Hybrid</option>
+            <option value="ELECTRIC">Electric</option>
+        </select>
+
+        <select id="sortBy">
+            <option value="">Default sorting</option>
+            <option value="priceAsc">Price ascending</option>
+            <option value="priceDesc">Price descending</option>
+            <option value="yearAsc">Year ascending</option>
+            <option value="yearDesc">Year descending</option>
+            <option value="mileageAsc">Mileage ascending</option>
+            <option value="mileageDesc">Mileage descending</option>
+        </select>
+
+        <button onclick="loadCars()">Apply filters</button>
+        <button onclick="clearFilters()">Clear</button>
+        <div id="exportButtons" class="export-buttons">
+            <button onclick="exportCars('json')">Download JSON</button>
+            <button onclick="exportCars('csv')">Download CSV</button>
+            <button onclick="exportCars('xml')">Download XML</button>
+        </div>
+    </div>
+
+    <div id="message"></div>
+
+    <div id="carsContainer"></div>
+</main>
+
+<script src="js/api.js"></script>
+<script src="js/i18n.js"></script>
+<script src="js/navbar.js"></script>
+<script src="js/cars.js"></script>
+
+</body>
+</html>
